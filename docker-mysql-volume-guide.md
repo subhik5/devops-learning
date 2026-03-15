@@ -12,13 +12,11 @@ Docker containers are temporary. When a container is removed, all data inside it
 2. Why We Use Environment Variables (-e)
 
 Environment variables allow us to configure a container when it starts without modifying the Docker image.
-
 Example:
 
 docker run -d -e MYSQL_ROOT_PASSWORD=root mysql
 
 This command:
-
 - Starts a MySQL container
 - Sets the root password to root
 
@@ -50,7 +48,6 @@ You can create databases manually later.
 4. Creating Database and User Automatically
 
 You can also pass additional environment variables so the container automatically creates a database and user when it starts.
-
 Example:
 
 docker run -d \
@@ -69,26 +66,20 @@ Password: dev123
 
 
 
-5. Meaning of Each Environment Variable
-
+5. Meaning of Each Environment Variable :-
 MYSQL_ROOT_PASSWORD
-
-Sets the admin password for MySQL root user.
+Sets the admin password for MySQL root user:-
 
 MYSQL_DATABASE
-
 Creates a database when the container starts.
 
 MYSQL_USER
-
 Creates a new database user.
 
 MYSQL_PASSWORD
-
 Password for the new user.
 
 Important rule:
-
 MYSQL_USER must always be used together with MYSQL_PASSWORD
 
 
@@ -96,15 +87,12 @@ MYSQL_USER must always be used together with MYSQL_PASSWORD
 6. Why Applications Should Not Use Root User
 
 Bad practice:
-
 Application connects using root user.
 
 Good practice:
-
 Create a dedicated user for the application.
 
 Example:
-
 Database: ecommerce
 User: appuser
 Password: app123
@@ -116,14 +104,12 @@ This improves security and prevents accidental damage to the database.
 7. Why We Use Docker Volumes
 
 Containers are temporary. If a container is deleted, all its data is lost.
-
 To persist data we attach a Docker volume.
-
 Create volume:
 
 docker volume create mysql-data
 
-Run container with volume:
+Run container with volume:-
 
 docker run -d \
 --name mysql-container \
@@ -137,7 +123,6 @@ Volume mapping:
 mysql-data -> /var/lib/mysql
 
 This folder is where MySQL stores:
-
 - databases
 - tables
 - logs

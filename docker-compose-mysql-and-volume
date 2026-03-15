@@ -1,0 +1,243 @@
+Docker Compose with MySQL and Volume
+
+1. Introduction
+
+This guide explains how to run a MySQL database using Docker Compose with persistent storage (volume).
+
+Docker Compose allows us to define and run multi-container applications using a YAML file. Instead of running long Docker commands, 
+  we define everything inside a "docker-compose.yml" file.
+
+Then we start all services using a single command.
+
+
+
+2. Why Use Docker Compose
+
+Without Docker Compose we run containers like this:
+
+docker run -d \
+-v mysql-data:/var/lib/mysql \
+-e MYSQL_ROOT_PASSWORD=root \
+-p 3306:3306 \
+mysql
+
+But if a project has multiple containers (database, backend, frontend), managing them manually becomes difficult.
+
+Docker Compose solves this by letting us define everything in a YAML configuration file.
+
+
+
+3. Project Structure
+
+Example project structure:
+
+docker-mysql-compose
+│
+├── docker-compose.yml
+└── README.md
+
+
+
+4. Docker Compose File for MySQL with Volume
+
+Create a file named:
+
+docker-compose.yml
+
+Add the following content:
+
+version: "3.8"
+
+services:
+
+  mysql:
+    image: mysql
+    container_name: mysql-container
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev123
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
+
+
+
+5. Explanation of Each Section
+
+Version
+
+version: "3.8"
+
+Defines the Docker Compose file format version.
+
+
+
+Services
+
+services:
+
+Defines the containers that will run in the application.
+
+
+
+MySQL Service
+
+mysql:
+  image: mysql
+
+This tells Docker Compose to pull and run the MySQL image.
+
+
+
+Container Name
+
+container_name: mysql-container
+
+Gives a custom name to the container.
+
+
+
+Environment Variables
+
+environment:
+  MYSQL_ROOT_PASSWORD: root
+  MYSQL_DATABASE: mydb
+  MYSQL_USER: dev
+  MYSQL_PASSWORD: dev123
+
+These variables configure MySQL automatically when the container starts.
+
+Meaning of variables:
+
+Variable| Purpose
+MYSQL_ROOT_PASSWORD| Root user password
+MYSQL_DATABASE| Database created automatically
+MYSQL_USER| Application user
+MYSQL_PASSWORD| Password for the application user
+
+
+
+Port Mapping
+
+ports:
+  - "3306:3306"
+
+Maps the host port to the container port.
+
+Format:
+
+HOST_PORT:CONTAINER_PORT
+
+This allows the host machine to connect to MySQL.
+
+
+
+Volume Mapping
+
+volumes:
+  - mysql-data:/var/lib/mysql
+
+This maps a Docker volume to the MySQL data directory.
+MySQL stores database files in:
+
+/var/lib/mysql
+
+Mapping a volume ensures the database data is not lost when containers are removed.
+
+
+
+Volume Declaration
+
+volumes:
+  mysql-data:
+
+This tells Docker Compose to create a named volume.
+
+
+
+6. Start the Containers
+
+Run the following command inside the project directory:
+
+docker compose up -d
+
+Docker Compose will:
+
+1. Pull the MySQL image
+2. Create the container
+3. Create the volume
+4. Start the service
+
+
+
+7. Check Running Containers
+
+docker ps
+
+You should see the MySQL container running.
+
+
+
+8. Check Created Volumes
+
+docker volume ls
+
+You will see a volume similar to:-
+docker-mysql-compose_mysql-data
+
+Docker Compose automatically prefixes the volume with the project name.
+
+
+
+9. Stop the Containers
+
+docker compose down
+
+This command stops and removes containers but keeps the volume.
+
+
+
+10. Remove Containers and Volumes
+
+docker compose down -v
+
+This removes:
+
+- Containers
+- Networks
+- Volumes
+
+
+
+11. Advantages of Docker Compose
+
+Docker Compose provides several advantages:
+
+- Simplifies container management
+- Allows running multiple services together
+- Uses configuration files instead of long commands
+- Makes development environments easy to reproduce
+
+
+
+12. Summary
+
+Docker Compose allows us to manage containers using a YAML configuration file.
+
+In this setup:
+
+- MySQL runs as a service
+- Environment variables configure the database
+- A Docker volume stores database data
+- Containers can be started using a single command
+
+This approach is commonly used in development and DevOps environments.
